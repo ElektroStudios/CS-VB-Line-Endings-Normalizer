@@ -9,7 +9,7 @@
     <Authors>ElektroStudios</Authors>
     <Company>ElektroStudios</Company>
     <Copyright>Copyright © ElektroStudios 2026</Copyright>
-    <Description>Normalizes line endings (CRLF / CR / LF) across C# and VB.NET source-code files.</Description>
+    <Description>Normalizes line endings (CRLF / CR / LF) in your C# or VB.NET source-code files.</Description>
     <FileVersion>1.0.0</FileVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <NeutralLanguage>en</NeutralLanguage>
@@ -17,7 +17,7 @@
     <OptionStrict>On</OptionStrict>
     <OutputType>Exe</OutputType>
     <PackageIcon>App.256.png</PackageIcon>
-    <PackageTags>line-endings-normalizer;crlf-lf-converter;file-normalizer;vbnet;csharp;dotnet-core;net-framework;multi-targeting;cross-platform;console-utility;console-application;utf-encoding-preservation;windows;linux</PackageTags>
+    <PackageTags>CRLF;line-endings;line-endings-normalizer;crlf-lf-converter;file-normalizer;vbnet;csharp;dotnet-core;net-framework;console-utility;console-application;utf-encoding-preservation;windows</PackageTags>
     <PackAsTool>True</PackAsTool>
     <Product>$(AssemblyTitle)</Product>
     <RootNamespace>CS_VB_Line_Endings_Normalizer</RootNamespace>
@@ -29,7 +29,9 @@
     <PackageProjectUrl></PackageProjectUrl>
     <RepositoryUrl>https://github.com/ElektroStudios/CS-VB-Line-Endings-Normalizer</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>README.nuget.md</PackageReadmeFile>
+    <PackageId>CS-VB_Line_Endings_Normalizer</PackageId>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,7 +43,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\README.md">
+    <None Include="..\README.nuget.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
