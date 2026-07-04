@@ -74,7 +74,32 @@ The application scans a given directory to process supported source-code files, 
 
 ## 🤖 Getting Started
 
-Download the latest release by clicking [here](https://github.com/ElektroStudios/CS-VB-Line-Endings-Normalizer/releases/latest) and start using it!.
+Choose the installation method that best fits your workflow. You can either use the tool as a standalone portable executable or install it as a .NET Tool via NuGet.
+
+### Option A: Standalone Executable (Portable)
+
+This is the standard approach if you want a ready-to-use console application without relying on the .NET SDK.
+
+1. Navigate to the [Releases page](https://github.com/ElektroStudios/CS-VB-Line-Endings-Normalizer/releases/latest).
+2. Download the latest `.zip` archive.
+3. Extract the contents to your preferred directory.
+4. Open your terminal and run the executable directly.
+
+### Option B: .NET  Tool (NuGet)
+
+If you are a developer with the .NET SDK installed, you can install the package globally. This is highly recommended as it allows you to invoke the tool directly from Visual Studio in the directory of your current solution.
+
+Open your terminal and run the following command:
+
+```bash
+dotnet tool install --global CS-VB_LINES
+```
+
+Once installed successfully, you can invoke the tool from anywhere using its command name:
+
+```bash
+CS-VB_LINES <directory_path> <line_ending_style> [options]
+```
 
 ## ⚙️ Usage
 
