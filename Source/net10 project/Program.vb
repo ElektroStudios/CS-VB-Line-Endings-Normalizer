@@ -151,11 +151,13 @@ Public Module Program
             ConsoleHelper.ExitWithMessage("[ ERROR ] Missing required argument(s). See usage above.", exitCode:=1, ConsoleColor.Red)
         End If
 
-        Dim isTestMode As Boolean = args.Contains("-t", StringComparer.OrdinalIgnoreCase) OrElse
-                                           args.Contains("--test", StringComparer.OrdinalIgnoreCase)
+        Dim isTestMode As Boolean =
+            args.Contains("-t", StringComparer.OrdinalIgnoreCase) OrElse
+            args.Contains("--test", StringComparer.OrdinalIgnoreCase)
 
-        Dim isRecursiveSearch As Boolean = args.Contains("-r", StringComparer.OrdinalIgnoreCase) OrElse
-                                           args.Contains("--recurse", StringComparer.OrdinalIgnoreCase)
+        Dim isRecursiveSearch As Boolean =
+            args.Contains("-r", StringComparer.OrdinalIgnoreCase) OrElse
+            args.Contains("--recursive", StringComparer.OrdinalIgnoreCase)
 
         Dim currentSearchOption As SearchOption = If(isRecursiveSearch, SearchOption.AllDirectories, SearchOption.TopDirectoryOnly)
 
