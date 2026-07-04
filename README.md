@@ -95,11 +95,7 @@ Open your terminal and run the following command:
 dotnet tool install --global CS-VB_LINES
 ```
 
-Once installed successfully, you can invoke the tool from anywhere using its command name:
-
-```bash
-CS-VB_LINES <directory_path> <line_ending_style> [options]
-```
+Once installed successfully, you can invoke the tool from anywhere using its command name `CS-VB_LINES`.
 
 ## ⚙️ Usage
 
