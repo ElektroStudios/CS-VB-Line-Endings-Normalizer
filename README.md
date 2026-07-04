@@ -92,7 +92,7 @@ If you are a developer with the .NET SDK installed, you can install the package 
 Open your terminal and run the following command:
 
 ```bash
-dotnet tool install --global CS-VB_LINES
+dotnet tool install --global CS-VB_Line_Endings_Normalizer
 ```
 
 Once installed successfully, you can invoke the tool from anywhere using its command name `CS-VB_LINES`.
