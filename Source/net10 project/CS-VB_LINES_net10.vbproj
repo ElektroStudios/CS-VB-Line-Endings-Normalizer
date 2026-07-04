@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ApplicationIcon>App.256.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>CS-VB_LINES</AssemblyName>
+    <AssemblyTitle>CS-VB Line Endings Normalizer</AssemblyTitle>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <Authors>ElektroStudios</Authors>
+    <Company>ElektroStudios</Company>
+    <Copyright>Copyright © ElektroStudios 2026</Copyright>
+    <Description>Normalizes line endings (CRLF / CR / LF) across C# and VB.NET source-code files.</Description>
+    <FileVersion>1.0.0</FileVersion>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <NeutralLanguage>en</NeutralLanguage>
+    <OptionInfer>Off</OptionInfer>
+    <OptionStrict>On</OptionStrict>
+    <OutputType>Exe</OutputType>
+    <PackageIcon>App.256.png</PackageIcon>
+    <PackageTags>line-endings-normalizer;crlf-lf-converter;file-normalizer;vbnet;csharp;dotnet-core;net-framework;multi-targeting;cross-platform;console-utility;console-application;utf-encoding-preservation;windows;linux</PackageTags>
+    <PackAsTool>True</PackAsTool>
+    <Product>$(AssemblyTitle)</Product>
+    <RootNamespace>CS_VB_Line_Endings_Normalizer</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <Title>CS-VB Line Endings Normalizer</Title>
+    <ToolCommandName>$(TargetName)</ToolCommandName>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="App.256.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\App.256.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
