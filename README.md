@@ -151,7 +151,7 @@ CS-VB_LINES.exe <directory_path> <line_ending_style> [options]
 | **<code>&#8209;r</code>**,&nbsp;**<code>&#8209;&#8209;recursive</code>** | Recursively process source-code files in all subdirectories. |
 | **<code>&#8209;t</code>**,&nbsp;**<code>&#8209;&#8209;test</code>** | Runs the application in Test Mode (dry-run), simulating the entire process without modifying actual files. |
 
-### 🚀 Examples
+### 👌 Examples
 
 Normalize line endings to Windows style (`CRLF`) for files in the the specified root directory:
 ```bash

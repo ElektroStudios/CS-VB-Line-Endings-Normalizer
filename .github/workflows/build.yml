@@ -2,7 +2,7 @@
 # CUSTOMIZABLE TEMPLATE REPOSITORY VARIABLES
 # 
 env:
-  SOLUTION_NAME: "CS-VB-Line-Endings-Normalizer"
+  SOLUTION_NAME: "CS-VB Line Endings Normalizer"
   SOLUTION_EXT:  "slnx"
   SONAR_PROJECT_KEY:  "ElektroStudios_CS-VB-Line-Endings-Normalizer"
   SONAR_ORGANIZATION: "elektrostudios"
