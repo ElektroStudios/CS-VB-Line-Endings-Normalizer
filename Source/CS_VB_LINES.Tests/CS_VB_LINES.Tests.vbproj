@@ -6,6 +6,8 @@
     <OptionExplicit>On</OptionExplicit>
     <OptionInfer>Off</OptionInfer>
     <RootNamespace>CS_VB_LINES.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +22,29 @@
   <ItemGroup>
     <!-- Reference to your main .NET 10 project -->
     <!-- Make sure to place the tests folder next to the Source folder -->
+    <!--
+      The application is always built in Release configuration for the tests, whatever the configuration of the test project is:
+      the end-to-end tests execute the real application as a separate process, and its Debug build waits for key presses
+      (Console.ReadKey) that nobody can press in an automated run.
+    -->
     <ProjectReference Include="..\net10 project\CS-VB_LINES_net10.vbproj" />
   </ItemGroup>
 
+	<!--
+    The end-to-end tests execute the real application as a separate process, and its Debug build waits for key presses
+    (Console.ReadKey) that nobody can press in an automated run, so the application MUST be the Release build.
+    Visual Studio builds the referenced project with the configuration of the solution (Debug) and "SetConfiguration" 
+    is not reliable there, so after building the tests, the application is built in Release explicitly 
+    and its files overwrite the Debug ones in the output directory of the tests.
+  -->
+	<Target Name="UseReleaseBuildOfTheApplication" AfterTargets="Build">
+		<MSBuild Projects="..\net10 project\CS-VB_LINES_net10.vbproj" Targets="Build" Properties="Configuration=Release">
+			<Output TaskParameter="TargetOutputs" ItemName="ReleaseAppAssembly" />
+		</MSBuild>
+		<ItemGroup>
+			<ReleaseAppFiles Include="%(ReleaseAppAssembly.RootDir)%(ReleaseAppAssembly.Directory)*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(ReleaseAppFiles)" DestinationFolder="$(OutDir)" />
+	</Target>
+	
 </Project>

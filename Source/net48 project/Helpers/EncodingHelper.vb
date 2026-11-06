@@ -281,19 +281,57 @@ Friend Module EncodingHelper
             Return True
         End If
 
-        ' Step 5: not UTF-32/16/7-shaped. Validate strictly as UTF-8:
-        Dim trimmedSample As Byte() = EncodingHelper.TrimUtf8LeadBytesCutOffBySampleBoundary(sampleBytes)
+        ' Step 5: not UTF-32/16/7-shaped. Validate the WHOLE file strictly as UTF-8.
+        Dim allBytes As Byte()
+        Using stream As New FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+            allBytes = New Byte(CInt(stream.Length) - 1) {}
+            Dim read As Integer = 0
+            Do While read < allBytes.Length
+                Dim n As Integer = stream.Read(allBytes, read, allBytes.Length - read)
+                If n = 0 Then Exit Do
+                read += n
+            Loop
+        End Using
+
         Dim strictUtf8Decoder As New UTF8Encoding(encoderShouldEmitUTF8Identifier:=False, throwOnInvalidBytes:=True)
         Try
-            strictUtf8Decoder.GetString(trimmedSample)
+            strictUtf8Decoder.GetString(allBytes)
             refEncodingKind = UtfEncodingKind.UTF8
             Return True
-
         Catch ex As DecoderFallbackException
-            refEncodingKind = UtfEncodingKind.Unknown ' Not valid UTF-8, no BOM, and not UTF-16/32/7-shaped: unsupported/legacy.
+            refEncodingKind = UtfEncodingKind.Unknown
             Return False
-
         End Try
+
+        ' PREVIOUS CODE FOR STEP 5 (REPLACED, KEEPING FOR REFERENCE):
+        '
+        ' It validated only the bounded sample (the first 32 KB of the file) after trimming the trailing bytes that looked like 
+        ' an incomplete multi-byte UTF-8 sequence. It was replaced because that caused a legacy (Latin-1 / Windows-1252) file 
+        ' to be wrongly detected as UTF-8, and then rewritten replacing its accented letters with U+FFFD (irreversible data loss):
+        '
+        '   - The trimming was always applied, so a legacy file ending with an accented letter and without a final line break 
+        '     had its last byte discarded, and the remaining bytes were accepted as valid UTF-8.
+        '
+        '   - Any invalid byte located after the first 32 KB was never validated.
+        '
+        ' The new code above validates the WHOLE file with the same strict decoder, so there is no sample boundary anymore, 
+        ' and "TrimUtf8LeadBytesCutOffBySampleBoundary" is no longer needed.
+        ' ----------------------------------------------------------------------------------------------------------------------------
+        '
+        '' Step 5: not UTF-32/16/7-shaped. Validate strictly as UTF-8:
+        'Dim trimmedSample As Byte() = EncodingHelper.TrimUtf8LeadBytesCutOffBySampleBoundary(sampleBytes)
+        'Dim strictUtf8Decoder As New UTF8Encoding(encoderShouldEmitUTF8Identifier:=False, throwOnInvalidBytes:=True)
+        'Try
+        '    strictUtf8Decoder.GetString(trimmedSample)
+        '    refEncodingKind = UtfEncodingKind.UTF8
+        '    Return True
+        '
+        'Catch ex As DecoderFallbackException
+        '    refEncodingKind = UtfEncodingKind.Unknown ' Not valid UTF-8, no BOM, and not UTF-16/32/7-shaped: unsupported/legacy.
+        '    Return False
+        '
+        'End Try
+
     End Function
 
     ''' <summary>
@@ -744,73 +782,96 @@ Friend Module EncodingHelper
         Return False ' It just had literal '+' signs, but no actual UTF-7 encoded characters.
     End Function
 
-    ''' <summary>
-    ''' Given a byte sample that has NOT yet been confirmed to be UTF-8, checks whether the fixed-size sample was cut off mid-way through 
-    ''' what LOOKS LIKE the start of a multi-byte UTF-8 sequence — based purely on lead-byte bit patterns — and if so, 
-    ''' removes those trailing lead bytes.
-    ''' <para></para>
-    ''' This exists ONLY to prevent a false negative in UTF-8 validity check caused by WHERE the bounded sample happened to end, 
-    ''' not because of any actual malformed content in the file itself. 
-    ''' It makes no claim, and performs no check, about whether the input actually IS valid UTF-8.
-    ''' </summary>
-    ''' 
-    ''' <param name="sampleBytes">
-    ''' The byte array sample to analyze. Not required to be valid UTF-8.
-    ''' </param>
-    ''' 
-    ''' <returns>
-    ''' A new byte array with the dangling lead bytes removed, if any were found at the very end of 
-    ''' the sample; otherwise, the original <paramref name="sampleBytes"/> array, unchanged.
-    ''' </returns>
-    ''' 
-    ''' <exception cref="ArgumentNullException">
-    ''' Thrown when <paramref name="sampleBytes"/> is null.
-    ''' </exception>
-    <DebuggerStepThrough>
-    Private Function TrimUtf8LeadBytesCutOffBySampleBoundary(sampleBytes As Byte()) As Byte()
-
-#If NETCOREAPP Then
-        ArgumentNullException.ThrowIfNull(sampleBytes)
-#Else
-        If sampleBytes Is Nothing Then
-            Throw New ArgumentNullException(NameOf(sampleBytes))
-        End If
-#End If
-
-        Dim length As Integer = sampleBytes.Length
-        If length = 0 Then
-            Return sampleBytes
-        End If
-
-        Dim maxLookBack As Integer = Math.Min(3, length)
-
-        For lookBack As Integer = 0 To maxLookBack - 1
-
-            Dim index As Integer = length - 1 - lookBack
-            Dim currentByte As Byte = sampleBytes(index)
-
-            Dim expectedSequenceLength As Integer = 0
-            If (currentByte And &HE0) = &HC0 Then
-                expectedSequenceLength = 2
-            ElseIf (currentByte And &HF0) = &HE0 Then
-                expectedSequenceLength = 3
-            ElseIf (currentByte And &HF8) = &HF0 Then
-                expectedSequenceLength = 4
-            End If
-
-            If expectedSequenceLength > 0 Then
-                Dim actualBytesAvailable As Integer = length - index
-                If actualBytesAvailable < expectedSequenceLength Then
-                    Dim trimmed(index - 1) As Byte
-                    Array.Copy(sampleBytes, trimmed, index)
-                    Return trimmed
-                End If
-                Exit For
-            End If
-        Next lookBack
-
-        Return sampleBytes
-    End Function
+    ' UNUSED ANYMORE BUT KEEPING FOR REFERENCE:
+    '
+    ' This function was used by "TryGetUtfFileEncodingKind" when it validated only a bounded sample (the first 32 KB) 
+    ' of the file as UTF-8. It was removed because that approach had two data-loss defects, 
+    ' both of which end up with a legacy (Latin-1 / Windows-1252) file being detected as UTF-8 and then rewritten, 
+    ' replacing its accented letters with the replacement character U+FFFD, which is irreversible:
+    '
+    '   1. The trimming was applied ALWAYS, not only when the sample really was cut by the sample boundary. 
+    '      A legacy file that ends with an accented letter and has no final line break (for example, a last comment line 
+    '      such as "' caf" + 0xE9) has a final byte that looks like the lead byte of a multi-byte UTF-8 sequence, 
+    '      so it was trimmed, the remaining bytes were valid ASCII, and the file was accepted as UTF-8.
+    '
+    '   2. Only the sample was validated, so any invalid UTF-8 byte located after the first 32 KB was never seen. 
+    '      A big legacy file whose first 32 KB are pure ASCII was accepted as UTF-8.
+    '
+    ' The replacement validates the WHOLE file with a strict UTF-8 decoder ("throwOnInvalidBytes:=True"). 
+    ' Since the entire content is analyzed, there is no sample boundary anymore, 
+    ' so there is nothing to trim and this function is not needed.
+    '
+    ' Do NOT restore its usage unless the file is read partially again, and in that case it must be applied 
+    ' ONLY when the sample length is lower than the file length (that is, when the sample was really cut by the boundary).
+    ' --------------------------------------------------------------------------------------------------------------------
+    '
+    '    ''' <summary>
+    '    ''' Given a byte sample that has NOT yet been confirmed to be UTF-8, checks whether the fixed-size sample was cut off mid-way through 
+    '    ''' what LOOKS LIKE the start of a multi-byte UTF-8 sequence — based purely on lead-byte bit patterns — and if so, 
+    '    ''' removes those trailing lead bytes.
+    '    ''' <para></para>
+    '    ''' This exists ONLY to prevent a false negative in UTF-8 validity check caused by WHERE the bounded sample happened to end, 
+    '    ''' not because of any actual malformed content in the file itself. 
+    '    ''' It makes no claim, and performs no check, about whether the input actually IS valid UTF-8.
+    '    ''' </summary>
+    '    ''' 
+    '    ''' <param name="sampleBytes">
+    '    ''' The byte array sample to analyze. Not required to be valid UTF-8.
+    '    ''' </param>
+    '    ''' 
+    '    ''' <returns>
+    '    ''' A new byte array with the dangling lead bytes removed, if any were found at the very end of 
+    '    ''' the sample; otherwise, the original <paramref name="sampleBytes"/> array, unchanged.
+    '    ''' </returns>
+    '    ''' 
+    '    ''' <exception cref="ArgumentNullException">
+    '    ''' Thrown when <paramref name="sampleBytes"/> is null.
+    '    ''' </exception>
+    '    <DebuggerStepThrough>
+    '    Private Function TrimUtf8LeadBytesCutOffBySampleBoundary(sampleBytes As Byte()) As Byte()
+    '
+    '#If NETCOREAPP Then
+    '        ArgumentNullException.ThrowIfNull(sampleBytes)
+    '#Else
+    '        If sampleBytes Is Nothing Then
+    '            Throw New ArgumentNullException(NameOf(sampleBytes))
+    '        End If
+    '#End If
+    '
+    '        Dim length As Integer = sampleBytes.Length
+    '        If length = 0 Then
+    '            Return sampleBytes
+    '        End If
+    '
+    '        Dim maxLookBack As Integer = Math.Min(3, length)
+    '
+    '        For lookBack As Integer = 0 To maxLookBack - 1
+    '
+    '            Dim index As Integer = length - 1 - lookBack
+    '            Dim currentByte As Byte = sampleBytes(index)
+    '
+    '            Dim expectedSequenceLength As Integer = 0
+    '            If (currentByte And &HE0) = &HC0 Then
+    '                expectedSequenceLength = 2
+    '            ElseIf (currentByte And &HF0) = &HE0 Then
+    '                expectedSequenceLength = 3
+    '            ElseIf (currentByte And &HF8) = &HF0 Then
+    '                expectedSequenceLength = 4
+    '            End If
+    '
+    '            If expectedSequenceLength > 0 Then
+    '                Dim actualBytesAvailable As Integer = length - index
+    '                If actualBytesAvailable < expectedSequenceLength Then
+    '                    Dim trimmed(index - 1) As Byte
+    '                    Array.Copy(sampleBytes, trimmed, index)
+    '                    Return trimmed
+    '                End If
+    '                Exit For
+    '            End If
+    '        Next lookBack
+    '
+    '        Return sampleBytes
+    '    End Function
 
 #End Region
 

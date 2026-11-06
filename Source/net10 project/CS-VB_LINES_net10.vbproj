@@ -5,12 +5,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AssemblyName>CS-VB_LINES</AssemblyName>
     <AssemblyTitle>CS-VB Line Endings Normalizer</AssemblyTitle>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <AssemblyVersion>1.1.0</AssemblyVersion>
     <Authors>ElektroStudios</Authors>
     <Company>ElektroStudios</Company>
     <Copyright>Copyright © ElektroStudios 2026</Copyright>
     <Description>Normalizes line endings (CRLF / CR / LF) in your C# or VB.NET source-code files.</Description>
-    <FileVersion>1.0.0</FileVersion>
+    <FileVersion>1.1.0</FileVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <NeutralLanguage>en</NeutralLanguage>
     <OptionInfer>Off</OptionInfer>
@@ -31,7 +31,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.nuget.md</PackageReadmeFile>
     <PackageId>CS-VB_Line_Endings_Normalizer</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

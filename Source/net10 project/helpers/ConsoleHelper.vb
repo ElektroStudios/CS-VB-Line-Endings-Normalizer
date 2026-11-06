@@ -86,7 +86,7 @@ Friend Module ConsoleHelper
             Console.WriteLine()
         End If
 
-        Console.WriteLine($"Exiting application with exit code: {exitCode} (0x{exitCode}) ...")
+        Console.WriteLine($"Exiting application with exit code: {exitCode} (0x{exitCode:X1}) ...")
 #If DEBUG Then
         Console.WriteLine()
         ConsoleHelper.WriteColoredTextLine("[!] This message only appears in DEBUG mode to prevent accidental termination.", ConsoleColor.Yellow)
