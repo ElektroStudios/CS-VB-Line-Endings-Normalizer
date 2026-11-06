@@ -139,6 +139,12 @@ Friend Module FileSystemHelper
                 If subDirectories IsNot Nothing Then
 
                     For Each subDirectory As String In subDirectories
+
+                        If Program.ProhibitedDirectoryNames.Contains(Path.GetFileName(subDirectory)) Then
+                            ConsoleHelper.WriteColoredTextLine($"[SKIPPED DIRECTORY] Build-output directory ignored: {subDirectory}", ConsoleColor.DarkGray)
+                            Continue For
+                        End If
+
                         pendingDirectories.Push(subDirectory)
                         Thread.CurrentThread.Join(0) ' Prevents ContextSwitchDeadlock on long-running iterations.
                     Next subDirectory
