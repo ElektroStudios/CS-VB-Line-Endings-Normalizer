@@ -17,6 +17,9 @@ Imports System.Text
 
 #Region " EncodingHelper "
 
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "S1192:String literals should not be duplicated", Justification:="Test examples and reference code required by documentation.")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "S125:Sections of code should not be commented out", Justification:="Reference algorithm preserved by design.")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "S1144:Unused private types or members should be removed", Justification:="Reference algorithm preserved by design.")>
 Friend Module EncodingHelper
 
 #Region " Enums "
