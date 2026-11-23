@@ -48,6 +48,11 @@ Friend Module FileSystemHelper
     ''' <returns>
     ''' A lazily-evaluated sequence of full file paths for every "*.cs" and "*.vb" file found.
     ''' </returns>
+    '''
+    ''' <exception cref="ArgumentNullException"></exception>
+    ''' <exception cref="ArgumentException"></exception>
+    ''' <exception cref="DirectoryNotFoundException"></exception>
+    ''' <exception cref="InvalidEnumArgumentException"></exception>
     <DebuggerStepThrough>
     Friend Iterator Function EnumerateSourceFiles(rootDirectoryPath As String, searchOption As SearchOption) As IEnumerable(Of String)
 
@@ -198,6 +203,8 @@ Friend Module FileSystemHelper
     ''' <exception cref="InvalidOperationException">
     ''' Thrown when <paramref name="throwIfMaxBytesExceedsFileSize"/> is <see langword="True"/> and the file length is less than <paramref name="maxBytes"/>.
     ''' </exception>
+    '''
+    ''' <exception cref="ArgumentException"></exception>
     <DebuggerStepThrough>
     Public Function ReadSampleBytes(filePath As String,
                                     maxBytes As Integer,
@@ -286,6 +293,10 @@ Friend Module FileSystemHelper
     ''' <summary>
     ''' Strips the Extended-Length Path prefix for UI display or Shell interop.
     ''' </summary>
+    '''
+    ''' <param name="targetPath">
+    ''' The target path.
+    ''' </param>
     <DebuggerStepThrough>
     Friend Function GetNormalPath(targetPath As String) As String
 

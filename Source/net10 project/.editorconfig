@@ -1,0 +1,5 @@
+﻿root = true
+
+[*.vb]
+dotnet_diagnostic.DCA006.severity = none
+dotnet_diagnostic.IDE0079.severity = none
