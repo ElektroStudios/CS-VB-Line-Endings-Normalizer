@@ -1,5 +1,14 @@
 ﻿# CS-VB Line Endings Normalizer Change Log 📋
 
+## v1.2 *(current)* 🆕
+
+### Fixes
+- Refined file-name exclusion matching by separating exact file names from suffixes, preventing false positives on user files whose names merely contain an excluded term (e.g., `MyAssemblyInfo.cs`).
+
+### Improvements
+- Added `GlobalSuppressions.*`, `Reference.*`, and `*.AssemblyInfo.*` to the list of automatically skipped files.
+- Expanded recursive directory exclusions to skip `.git`, `.vs`, `packages`, and `TestResults` subdirectories in addition to `bin` and `obj`.
+
 ## v1.1 *(current)* 🆕
 - Fixed a critical bug that could corrupt files saved in legacy encodings (such as Windows-1252 or ISO-8859-1): 
   when a file contained accented characters near its end, it could be wrongly detected as UTF-8 and rewritten, replacing those characters with "�". 
